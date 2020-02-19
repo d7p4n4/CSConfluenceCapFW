@@ -2,6 +2,7 @@
 using CSConfluenceClassesFW.DeletePage;
 using CSConfluenceClassesFW.GetIdByTitle;
 using CSConfluenceClassesFW.IsPageExists;
+using CSConfluenceClassesFW.UpdatePage;
 using CSConfluenceClassesFW.UploadAttachment;
 using Newtonsoft.Json;
 using System;
@@ -262,6 +263,48 @@ namespace CSConfluenceCapFW
                     return getIdByTitleResult;
                 }
             }
+
+        }
+
+        public UpdatePageResult UpdateConfluencePage(string cim, string oldalAzonosito, string html, string URL, string felhasznaloNev, string jelszo, string verzioSzam)
+        {
+            UpdatePageResult updatePageResult = new UpdatePageResult();
+
+            html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
+
+            string DATA = "{\"version\":{\"number\":" + verzioSzam + "},\"title\":\"" + cim + "\",\"type\":\"page\",\"body\"" +
+                ":{\"storage\":{\"value\":\"" + html + "\",\"representation\":\"storage\"}}}";
+
+            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+            client.BaseAddress = new System.Uri(URL + "/" + oldalAzonosito);
+            byte[] cred = UTF8Encoding.UTF8.GetBytes(felhasznaloNev + ":" + jelszo);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(cred));
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            System.Net.Http.HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+
+            HttpResponseMessage message = client.PutAsync(URL + "/" + oldalAzonosito, content).Result;
+            string description = string.Empty;
+            string result = message.Content.ReadAsStringAsync().Result;
+            
+            if (message.IsSuccessStatusCode)
+            {
+                UpdatePageSuccessResponse JSONObjSuccess = new UpdatePageSuccessResponse();
+                JSONObjSuccess = JsonConvert.DeserializeObject<UpdatePageSuccessResponse>(result);
+
+                updatePageResult.SuccessResponse = JSONObjSuccess;
+            }
+            else
+            {
+
+                UpdatePageFailedRasponse JSONObjFailed = new UpdatePageFailedRasponse();
+                JSONObjFailed = JsonConvert.DeserializeObject<UpdatePageFailedRasponse>(result);
+
+                updatePageResult.FailedResponse = JSONObjFailed;
+
+            }
+
+            return updatePageResult;
 
         }
 

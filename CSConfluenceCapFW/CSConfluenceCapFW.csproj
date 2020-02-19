@@ -53,6 +53,7 @@
     <Compile Include="GetIdByTitleResult.cs" />
     <Compile Include="IsPageExistsResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdatePageResult.cs" />
     <Compile Include="UploadAttachmentResult.cs" />
   </ItemGroup>
   <ItemGroup>
