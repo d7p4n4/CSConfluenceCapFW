@@ -215,17 +215,17 @@ namespace CSConfluenceCapFW
             }
         }
 
-        public async Task<UploadAttachmentResult> UploadAttachment(string felhasznaloNev, string jelszo, string URL, string oldalNeve, string kepFajlBase64, string fajlNev)
+        public UploadAttachmentResult UploadAttachment(string felhasznaloNev, string jelszo, string URL, string oldalNeve, string kepFajlBase64, string fajlNev)
         {
 
-            return await KepFeltoltes(
+            return KepFeltoltes(
                 felhasznaloNev
                 , jelszo
                 , URL
                 , oldalNeve
                 , Convert.FromBase64String(kepFajlBase64)
                 , fajlNev
-                );
+                ).Result;
         }
 
         public GetIdByTitleResult GetIdByTitle(string felhasznaloNev, string jelszo, string terAzonosito, string URL, string oldalNeve)
